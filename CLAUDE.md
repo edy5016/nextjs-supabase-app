@@ -16,6 +16,7 @@ npm run lint       # ESLint 실행
 ## 환경 설정
 
 `.env.example`을 `.env.local`로 복사한 후 다음 값을 입력하세요:
+
 - `NEXT_PUBLIC_SUPABASE_URL` — Supabase 프로젝트 설정에서 확인
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — Supabase 프로젝트 설정에서 확인
 
@@ -35,6 +36,7 @@ npm run lint       # ESLint 실행
 ### 인증 흐름
 
 인증 관련 라우트는 `app/auth/` 아래에 위치합니다:
+
 - `login/`, `sign-up/`, `forgot-password/`, `update-password/` — 폼 페이지
 - `confirm/route.ts` — Supabase 이메일 인증 콜백을 처리하는 Route Handler
 - `error/` — 인증 오류 표시

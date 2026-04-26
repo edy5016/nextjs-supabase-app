@@ -1,0 +1,6 @@
+.next/
+node_modules/
+public/
+*.lock
+shrimp_data/
+.claude/

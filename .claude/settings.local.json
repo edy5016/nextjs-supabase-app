@@ -1,8 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "mcp__supabasex"
-      
+      "mcp__supabasex",
+      "Bash(npm install *)",
+      "Bash(npx husky *)",
+      "Bash(npm run *)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -24,7 +24,9 @@
     },
     "shrimp-task-manager": {
       "command": "node",
-      "args": ["C:\\Users\\82109\\Documents\\dev\\claud\\workspaces\\mcp-shrimp-task-manager\\dist\\index.js"],
+      "args": [
+        "C:\\Users\\82109\\Documents\\dev\\claud\\workspaces\\mcp-shrimp-task-manager\\dist\\index.js"
+      ],
       "env": {
         "DATA_DIR": "C:\\Users\\82109\\Documents\\dev\\claud\\workspaces\\nextjs-supabase-app\\shrimp_data",
         "TEMPLATES_USE": "en",
