@@ -1,0 +1,4 @@
+# Git Commit Rules
+- Always generate git commit messages in Korean.
+- 커밋 메시지는 무조건 한국어로 작성해줘.
+- Follow the conventional commits format (feat:, fix:, chore:, etc.).

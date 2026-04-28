@@ -8,7 +8,7 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
-      <main className="pb-16 pt-14">{children}</main>
+      <main className="mx-auto max-w-md pb-16 pt-14">{children}</main>
       <Suspense fallback={<div className="h-16" />}>
         <MobileNav />
       </Suspense>
