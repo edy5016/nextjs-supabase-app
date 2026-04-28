@@ -6,18 +6,22 @@ import { useState } from "react";
 
 interface GoogleAuthButtonProps {
   label?: string;
+  next?: string;
 }
 
-export function GoogleAuthButton({ label = "Google로 로그인" }: GoogleAuthButtonProps) {
+export function GoogleAuthButton({ label = "Google로 로그인", next }: GoogleAuthButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleAuth = async () => {
     const supabase = createClient();
     setIsLoading(true);
+    const callbackUrl = next
+      ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+      : `${window.location.origin}/auth/callback`;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl,
       },
     });
   };

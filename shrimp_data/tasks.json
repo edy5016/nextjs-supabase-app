@@ -1,0 +1,251 @@
+{
+  "tasks": [
+    {
+      "id": "92b325fa-725a-443b-92ea-141b711e3052",
+      "name": "Task 002: TypeScript 타입 시스템 및 더미 데이터 정의",
+      "description": "Gather 앱 전체에서 사용할 TypeScript 인터페이스, 타입, 더미 데이터를 정의한다. types/index.ts에 DB 모델 타입, UI 복합 타입, API 응답 타입을 정의하고, lib/dummy-data.ts에 Phase 2 UI 개발용 임시 더미 데이터를 생성한다. 모든 타입은 PRD의 데이터 모델(users, events, event_participants)을 기반으로 한다.",
+      "notes": "모든 타입은 PRD docs/PRD.md의 데이터 모델 섹션을 정확히 반영. 더미 데이터는 Phase 2 UI 개발에만 사용하며, Phase 3 실제 DB 연동 시 교체됨. cover_image_url은 picsum.photos 등 플레이스홀더 URL 사용.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-27T09:16:29.147Z",
+      "updatedAt": "2026-04-27T10:06:31.164Z",
+      "relatedFiles": [
+        {
+          "path": "types/index.ts",
+          "type": "CREATE",
+          "description": "Gather 앱 전역 TypeScript 타입 정의"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "CREATE",
+          "description": "Phase 2 UI 개발용 더미 데이터"
+        },
+        {
+          "path": "docs/PRD.md",
+          "type": "REFERENCE",
+          "description": "데이터 모델 및 기능 명세 참조",
+          "lineStart": 350,
+          "lineEnd": 400
+        }
+      ],
+      "implementationGuide": "1. types/index.ts 생성:\n   - UserRole = 'user' | 'admin'\n   - EventStatus = 'upcoming' | 'ongoing' | 'ended'\n   - ParticipantRole = 'host' | 'participant'\n   - User { id: string, email: string, name: string, avatar_url: string | null, role: UserRole, created_at: string, updated_at: string }\n   - Event { id, title, description, location, event_date, cover_image_url, invite_code, status: EventStatus, created_by, created_at, updated_at }\n   - EventParticipant { id, event_id, user_id, role: ParticipantRole, joined_at }\n   - EventWithHost = Event & { host: Pick<User, 'id'|'name'|'avatar_url'> }\n   - EventWithCount = Event & { participant_count: number }\n   - EventWithParticipants = EventWithHost & { participants: (EventParticipant & { user: User })[] }\n   - ApiResponse<T> = { data: T | null, error: string | null }\n   - PaginatedResponse<T> = { data: T[], count: number, page: number, per_page: number }\n2. lib/dummy-data.ts 생성:\n   - DUMMY_USERS: User[] 배열 (3명: 주최자1, 참여자들)\n   - DUMMY_EVENTS: EventWithCount[] 배열 (5개: 상태별 혼합 - upcoming 3개, ongoing 1개, ended 1개)\n   - DUMMY_PARTICIPANTS: (EventParticipant & { user: User })[] 배열\n   - getDummyEventById(id: string) 함수\n   - getDummyEventsByUserId(userId: string) 함수",
+      "verificationCriteria": "1. types/index.ts에 User, Event, EventParticipant, EventStatus, UserRole, ParticipantRole, ApiResponse, PaginatedResponse 타입이 모두 정의됨\n2. lib/dummy-data.ts에 DUMMY_USERS(3명), DUMMY_EVENTS(5개, 상태 혼합), DUMMY_PARTICIPANTS가 정의됨\n3. npx tsc --noEmit 실행 시 타입 오류 없음\n4. 더미 이벤트에 upcoming/ongoing/ended 상태가 모두 포함됨",
+      "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
+      "summary": "types/index.ts에 UserRole, EventStatus, ParticipantRole, User, Event, EventParticipant, EventWithHost, EventWithCount, EventWithParticipants, ApiResponse, PaginatedResponse 전체 타입 정의 완료. lib/dummy-data.ts에 DUMMY_USERS(3명), DUMMY_EVENTS(5개: upcoming 3개/ongoing 1개/ended 1개), DUMMY_PARTICIPANTS(3개), getDummyEventById/getDummyEventsByUserId 함수 구현 완료. npx tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-27T10:06:31.160Z"
+    },
+    {
+      "id": "32f6a9fe-1303-4857-83f7-3ff5138c2958",
+      "name": "Task 001-1: 미들웨어 공개 라우트 설정",
+      "description": "lib/supabase/proxy.ts의 인증 미들웨어를 수정하여 /join/* (초대 링크 참여 페이지)와 /admin/login을 공개 라우트로 허용한다. 현재 미들웨어는 '/'와 '/auth/*'만 공개로 허용하므로, 초대 링크와 관리자 로그인 페이지가 리다이렉트되는 문제를 해결한다.",
+      "notes": "/admin/dashboard 등 /admin/login 이외의 관리자 경로는 인증 필요. role: admin 체크는 Phase 3(Task 008)에서 구현.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-27T09:16:29.147Z",
+      "updatedAt": "2026-04-27T10:06:33.233Z",
+      "relatedFiles": [
+        {
+          "path": "lib/supabase/proxy.ts",
+          "type": "TO_MODIFY",
+          "description": "공개 라우트 추가",
+          "lineStart": 48,
+          "lineEnd": 58
+        }
+      ],
+      "implementationGuide": "lib/supabase/proxy.ts의 리다이렉트 조건 수정:\n기존: pathname !== '/' AND !user AND !pathname.startsWith('/auth')\n수정: 공개 경로 배열 정의\n  const publicPaths = ['/', '/auth', '/join', '/admin/login']\n  const isPublicPath = publicPaths.some(p => pathname === p || pathname.startsWith(p + '/'))\n  if (!user && !isPublicPath) { redirect to /auth/login }",
+      "verificationCriteria": "1. /join/테스트코드 접근 시 로그인 리다이렉트 없이 페이지 로드됨\n2. /admin/login 접근 시 로그인 리다이렉트 없이 페이지 로드됨\n3. /admin/dashboard 미인증 접근 시 /auth/login으로 리다이렉트됨\n4. 기존 /auth/* 경로 동작 변화 없음",
+      "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
+      "summary": "lib/supabase/proxy.ts 리다이렉트 조건을 publicPaths 배열 방식으로 리팩토링. [\"/\", \"/auth\", \"/join\", \"/admin/login\"] 경로는 미인증 시에도 접근 허용, 나머지 경로는 /auth/login으로 리다이렉트. 기존 /auth/* 동작 유지.",
+      "completedAt": "2026-04-27T10:06:33.230Z"
+    },
+    {
+      "id": "8db48a50-49c6-4837-abe6-d72bf80f09e7",
+      "name": "Task 001-2: 공통 레이아웃 컴포넌트 골격 구현",
+      "description": "모바일 하단 탭 내비게이션(MobileNav), 모바일 상단 헤더(MobileHeader), 관리자 사이드바(AdminSidebar) 컴포넌트의 골격을 구현한다. 이 컴포넌트들은 각각 모바일 레이아웃과 관리자 레이아웃에서 사용된다. PRD의 디자인 가이드(Primary: #10B981, 하단 탭 높이 64px, 사이드바 240px)를 반영한다.",
+      "notes": "Lucide React 아이콘 사용(Calendar, PlusCircle, User, LayoutDashboard, CalendarDays, Users, BarChart3, LogOut). ThemeSwitcher와 LogoutButton은 기존 components에서 재사용.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "92b325fa-725a-443b-92ea-141b711e3052"
+        }
+      ],
+      "createdAt": "2026-04-27T09:16:29.147Z",
+      "updatedAt": "2026-04-27T10:07:15.375Z",
+      "relatedFiles": [
+        {
+          "path": "components/layout/mobile-nav.tsx",
+          "type": "CREATE",
+          "description": "모바일 하단 탭 내비게이션"
+        },
+        {
+          "path": "components/layout/mobile-header.tsx",
+          "type": "CREATE",
+          "description": "모바일 상단 헤더"
+        },
+        {
+          "path": "components/layout/admin-sidebar.tsx",
+          "type": "CREATE",
+          "description": "관리자 사이드바"
+        },
+        {
+          "path": "components/theme-switcher.tsx",
+          "type": "REFERENCE",
+          "description": "재사용할 테마 스위처"
+        },
+        {
+          "path": "components/logout-button.tsx",
+          "type": "REFERENCE",
+          "description": "재사용할 로그아웃 버튼"
+        }
+      ],
+      "implementationGuide": "1. components/layout/mobile-nav.tsx (Client Component):\n   - 하단 고정 탭바, 높이 64px\n   - 탭 항목: 내 이벤트(/events, CalendarIcon), 새 이벤트(/events/create, PlusCircleIcon), 프로필(/profile, UserIcon)\n   - usePathname()으로 현재 경로 감지, 활성 탭 스타일(text-emerald-500)\n   - 각 탭: 아이콘(24px) + 텍스트(12px) 조합\n2. components/layout/mobile-header.tsx (Server Component):\n   - 상단 고정 헤더, 높이 56px\n   - 좌측: Gather 로고/제목\n   - 우측: ThemeSwitcher 재사용\n3. components/layout/admin-sidebar.tsx (Client Component):\n   - 좌측 고정 사이드바, 너비 240px, 배경 gray-900\n   - 로고 영역(64px) + 메뉴 항목\n   - 메뉴: 대시보드(/admin/dashboard), 이벤트 관리(/admin/events), 사용자 관리(/admin/users), 통계(/admin/analytics), 로그아웃\n   - usePathname()으로 활성 메뉴 감지(배경 emerald-500, 흰색 텍스트)\n   - LogoutButton 컴포넌트 재사용",
+      "verificationCriteria": "1. MobileNav: 3개 탭(내 이벤트, 새 이벤트, 프로필) 렌더링, 현재 경로 활성 스타일 적용\n2. MobileHeader: Gather 로고 + 테마 스위처 렌더링\n3. AdminSidebar: 4개 메뉴 + 로그아웃 버튼 렌더링, 현재 경로 활성 스타일 적용\n4. npx tsc --noEmit 타입 오류 없음",
+      "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
+      "summary": "MobileNav(3탭, usePathname 활성 감지, text-emerald-500), MobileHeader(Gather 로고 + ThemeSwitcher 재사용), AdminSidebar(4메뉴 + LogoutButton 재사용, bg-emerald-500 활성 스타일) 3개 컴포넌트 구현 완료. npx tsc --noEmit 오류 없음.",
+      "completedAt": "2026-04-27T10:07:15.373Z"
+    },
+    {
+      "id": "5718ccda-6632-4abc-a148-67dbae0c0c67",
+      "name": "Task 001-3: 모바일 라우트 골격 생성",
+      "description": "모바일 사용자(주최자/참여자)용 Route Group (mobile)을 생성하고, 공통 모바일 레이아웃 및 5개 페이지(내 이벤트 목록, 이벤트 생성, 이벤트 상세, 이벤트 수정, 프로필)의 빈 골격 파일을 만든다. 각 페이지는 더미 데이터를 활용한 최소 UI 골격을 포함한다.",
+      "notes": "app/protected/layout.tsx와 app/protected/page.tsx는 이 Task 완료 후 삭제. Route Group (mobile)은 URL에 영향 없음: /events, /profile로 접근 가능. 각 페이지는 Server Component 기본, 더미 데이터 import하여 최소 렌더링.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "32f6a9fe-1303-4857-83f7-3ff5138c2958"
+        },
+        {
+          "taskId": "8db48a50-49c6-4837-abe6-d72bf80f09e7"
+        }
+      ],
+      "createdAt": "2026-04-27T09:16:29.147Z",
+      "updatedAt": "2026-04-27T10:13:07.479Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/layout.tsx",
+          "type": "CREATE",
+          "description": "모바일 공통 레이아웃"
+        },
+        {
+          "path": "app/(mobile)/events/page.tsx",
+          "type": "CREATE",
+          "description": "내 이벤트 목록 페이지"
+        },
+        {
+          "path": "app/(mobile)/events/create/page.tsx",
+          "type": "CREATE",
+          "description": "이벤트 생성 페이지"
+        },
+        {
+          "path": "app/(mobile)/events/[id]/page.tsx",
+          "type": "CREATE",
+          "description": "이벤트 상세 페이지"
+        },
+        {
+          "path": "app/(mobile)/events/[id]/edit/page.tsx",
+          "type": "CREATE",
+          "description": "이벤트 수정 페이지"
+        },
+        {
+          "path": "app/(mobile)/profile/page.tsx",
+          "type": "CREATE",
+          "description": "프로필 페이지"
+        },
+        {
+          "path": "app/protected/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "삭제 대상 (mobile layout으로 대체)"
+        },
+        {
+          "path": "app/protected/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "삭제 대상 (events 페이지로 대체)"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "DEPENDENCY",
+          "description": "더미 데이터 사용"
+        }
+      ],
+      "implementationGuide": "1. app/(mobile)/layout.tsx:\n   - MobileHeader (상단) + {children} + MobileNav (하단) 구조\n   - 메인 컨텐츠: pt-14 pb-16 (헤더/탭바 높이 보정)\n2. app/(mobile)/events/page.tsx:\n   - 제목 '내 이벤트', DUMMY_EVENTS 목록 표시\n   - 이벤트 카드 골격: 제목, 날짜, 참여자 수, 상태 배지\n   - FAB 버튼(+ 새 이벤트 만들기) - 우하단 고정\n3. app/(mobile)/events/create/page.tsx:\n   - '이벤트 만들기' 제목, 폼 골격(제목, 날짜, 장소, 설명 필드)\n   - 실제 폼 로직은 Phase 2(Task 004)에서 구현\n4. app/(mobile)/events/[id]/page.tsx:\n   - params: { id: string } 사용\n   - getDummyEventById(id)로 더미 이벤트 표시\n   - 이벤트 정보(제목, 날짜, 장소), 참여자 목록 골격\n5. app/(mobile)/events/[id]/edit/page.tsx:\n   - 이벤트 수정 폼 골격\n6. app/(mobile)/profile/page.tsx:\n   - 프로필 정보 표시 골격, 로그아웃 버튼",
+      "verificationCriteria": "1. /events 접근 시 모바일 레이아웃(헤더+탭바) + 이벤트 카드 목록 렌더링\n2. /events/create 접근 시 폼 골격 렌더링\n3. /events/[id] 접근 시 더미 이벤트 정보 렌더링\n4. /profile 접근 시 프로필 골격 렌더링\n5. 미인증 사용자의 /events 접근 시 /auth/login 리다이렉트\n6. app/protected/ 디렉토리 삭제 완료",
+      "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
+      "summary": "app/(mobile)/layout.tsx(dynamic=force-dynamic, MobileHeader+MobileNav), events/page.tsx(DUMMY_EVENTS 카드+FAB), events/create/page.tsx(폼 골격), events/[id]/page.tsx(더미 데이터+참여자 목록), events/[id]/edit/page.tsx(수정 폼), profile/page.tsx(Supabase 실제 사용자 표시) 생성 완료. app/protected/ 삭제 완료. usePathname Suspense 및 cacheComponents 충돌 해결.",
+      "completedAt": "2026-04-27T10:13:07.476Z"
+    },
+    {
+      "id": "b9f6fb7b-4345-4ac9-9d0b-8b05c59609f9",
+      "name": "Task 001-4: 관리자/공개 라우트 및 랜딩 페이지 완성",
+      "description": "관리자 라우트 5개(admin/login, admin/dashboard, admin/events, admin/users, admin/analytics), 초대 링크 공개 라우트(join/[invite_code]), 관리자 공통 레이아웃을 생성한다. 또한 app/page.tsx를 Gather 서비스 랜딩 페이지로 교체한다.",
+      "notes": "관리자 레이아웃에는 인증 체크 미포함(Phase 3 Task 008에서 구현). 기존 스타터 킷 컴포넌트(hero.tsx, deploy-button.tsx, tutorial/*)는 새 랜딩 페이지로 대체되어 사용 안 함. GoogleAuthButton 재사용 가능. 관리자 admin/layout.tsx는 app/protected/layout.tsx의 인증 강제 패턴을 참고하되 사이드바 포함.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "32f6a9fe-1303-4857-83f7-3ff5138c2958"
+        },
+        {
+          "taskId": "8db48a50-49c6-4837-abe6-d72bf80f09e7"
+        }
+      ],
+      "createdAt": "2026-04-27T09:16:29.147Z",
+      "updatedAt": "2026-04-27T10:13:12.051Z",
+      "relatedFiles": [
+        {
+          "path": "app/admin/layout.tsx",
+          "type": "CREATE",
+          "description": "관리자 공통 레이아웃 (사이드바)"
+        },
+        {
+          "path": "app/admin/login/page.tsx",
+          "type": "CREATE",
+          "description": "관리자 로그인 페이지"
+        },
+        {
+          "path": "app/admin/dashboard/page.tsx",
+          "type": "CREATE",
+          "description": "관리자 대시보드 메인"
+        },
+        {
+          "path": "app/admin/events/page.tsx",
+          "type": "CREATE",
+          "description": "이벤트 관리 테이블"
+        },
+        {
+          "path": "app/admin/users/page.tsx",
+          "type": "CREATE",
+          "description": "사용자 관리 테이블"
+        },
+        {
+          "path": "app/admin/analytics/page.tsx",
+          "type": "CREATE",
+          "description": "통계 분석 페이지"
+        },
+        {
+          "path": "app/join/[invite_code]/page.tsx",
+          "type": "CREATE",
+          "description": "초대 링크 참여 페이지"
+        },
+        {
+          "path": "app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "Gather 랜딩 페이지로 교체"
+        },
+        {
+          "path": "components/google-auth-button.tsx",
+          "type": "REFERENCE",
+          "description": "재사용할 Google 로그인 버튼"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "DEPENDENCY",
+          "description": "더미 데이터 사용"
+        }
+      ],
+      "implementationGuide": "1. app/admin/layout.tsx:\n   - AdminSidebar(좌측 240px) + 메인 컨텐츠(나머지) 구조\n   - 배경: 사이드바 bg-gray-900, 메인 bg-gray-50\n   - flex 레이아웃, min-h-screen\n2. app/admin/login/page.tsx:\n   - 공개 페이지(미들웨어 허용됨)\n   - '관리자 로그인' 제목, Google 로그인 버튼 골격\n   - 기존 GoogleAuthButton 컴포넌트 재사용\n3. app/admin/dashboard/page.tsx:\n   - '대시보드' 제목, 지표 카드 7개 골격(더미 숫자)\n   - 카드: 오늘/이번주/이번달/전체 이벤트수, 오늘/이번주/전체 사용자수\n4. app/admin/events/page.tsx:\n   - '이벤트 관리' 제목, 검색바 골격, 테이블 골격(더미 데이터)\n5. app/admin/users/page.tsx:\n   - '사용자 관리' 제목, 검색바 골격, 테이블 골격(더미 데이터)\n6. app/admin/analytics/page.tsx:\n   - '통계 분석' 제목, 차트 플레이스홀더(Recharts는 Phase 2 Task 006에서 설치)\n7. app/join/[invite_code]/page.tsx:\n   - params: { invite_code: string } 사용\n   - 이벤트 미리보기 골격(더미 데이터로 표시)\n   - '참여하기' 버튼 골격\n8. app/page.tsx 교체:\n   - Gather 서비스 소개 랜딩 페이지\n   - 히어로 섹션: '초대 링크 하나로 이벤트를 완성하세요'\n   - 주요 기능 3가지 소개 카드\n   - 'Google로 시작하기' 버튼 → /auth/login 링크",
+      "verificationCriteria": "1. / 접근 시 Gather 랜딩 페이지 렌더링(서비스 소개 + Google로 시작하기 버튼)\n2. /admin/login 미인증 접근 시 리다이렉트 없이 페이지 로드\n3. /admin/dashboard 접근 시 사이드바 + 지표 카드 골격 렌더링\n4. /admin/events, /admin/users, /admin/analytics 각 페이지 렌더링\n5. /join/테스트코드 미인증 접근 시 리다이렉트 없이 이벤트 미리보기 골격 렌더링\n6. npm run build 오류 없음",
+      "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
+      "summary": "app/admin/layout.tsx(사이드바+dynamic), admin/login(GoogleAuthButton 재사용), admin/dashboard(지표 카드 7개), admin/events(테이블+검색바), admin/users(테이블+검색바), admin/analytics(차트 플레이스홀더), join/[invite_code](이벤트 미리보기+참여 버튼), app/page.tsx(Gather 랜딩 페이지) 완성. npm run build 성공, 14개 라우트 생성.",
+      "completedAt": "2026-04-27T10:13:12.049Z"
+    }
+  ]
+}
