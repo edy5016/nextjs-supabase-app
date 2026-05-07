@@ -1,10 +1,27 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { GoogleAuthButton } from "@/components/google-auth-button";
+
+export const dynamic = "force-dynamic";
 
 interface Props {
   searchParams: Promise<{ error?: string }>;
 }
 
 export default async function AdminLoginPage({ searchParams }: Props) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    if (user.app_metadata?.role === "admin") {
+      redirect("/admin/dashboard");
+    } else {
+      redirect("/");
+    }
+  }
+
   const { error } = await searchParams;
 
   return (

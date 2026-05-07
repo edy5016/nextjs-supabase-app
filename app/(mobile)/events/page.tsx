@@ -109,7 +109,7 @@ export default async function EventsPage({
                   <div className="flex flex-col gap-1 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Calendar size={14} />
-                      <span>{formatDate(event.event_date)}</span>
+                      <span>{formatDate(event.start_at)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin size={14} />

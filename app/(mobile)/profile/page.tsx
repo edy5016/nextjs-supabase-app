@@ -129,7 +129,7 @@ export default async function ProfilePage() {
                 <div className="mt-1 flex flex-col gap-0.5 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Calendar size={11} />
-                    <span>{formatDate(event.event_date)}</span>
+                    <span>{formatDate(event.start_at)}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <MapPin size={11} />

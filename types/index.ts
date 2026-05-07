@@ -19,7 +19,9 @@ export interface Event {
   title: string;
   description: string | null;
   location: string;
-  event_date: string;
+  start_at: string;
+  end_at: string;
+  max_participants: number;
   cover_image_url: string | null;
   invite_code: string;
   status: EventStatus;

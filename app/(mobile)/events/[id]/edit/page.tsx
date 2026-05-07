@@ -23,15 +23,14 @@ export default function EditEventPage({
   }
 
   // 기존 이벤트 데이터를 폼 기본값으로 변환
-  // event_date(ISO) → start_at, end_at(datetime-local 포맷: 'YYYY-MM-DDTHH:mm')
+  // start_at/end_at(ISO) → datetime-local 포맷('YYYY-MM-DDTHH:mm')으로 변환
   const defaultValues: Partial<EventFormValues> = {
     title: event.title,
     description: event.description ?? "",
     location: event.location,
-    // event_date를 start_at과 end_at 모두에 초기값으로 사용
-    start_at: event.event_date.slice(0, 16),
-    end_at: event.event_date.slice(0, 16),
-    max_participants: event.participant_count,
+    start_at: event.start_at.slice(0, 16),
+    end_at: event.end_at.slice(0, 16),
+    max_participants: event.max_participants,
     status: event.status,
   };
 

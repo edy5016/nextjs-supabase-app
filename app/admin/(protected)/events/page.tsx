@@ -72,7 +72,7 @@ export default function AdminEventsPage() {
                   <tr key={event.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
                     <td className="px-4 py-4 font-medium text-foreground">{event.title}</td>
                     <td className="px-4 py-4 text-muted-foreground">
-                      {new Date(event.event_date).toLocaleDateString("ko-KR")}
+                      {new Date(event.start_at).toLocaleDateString("ko-KR")}
                     </td>
                     <td className="px-4 py-4 text-muted-foreground">{event.participant_count}명</td>
                     <td className="px-4 py-4">

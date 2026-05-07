@@ -13,11 +13,11 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/admin/login");
+    redirect("/auth/login");
   }
 
   if (user.app_metadata?.role !== "admin") {
-    redirect("/admin/login?error=unauthorized");
+    redirect("/");
   }
 
   return (

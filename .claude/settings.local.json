@@ -4,7 +4,10 @@
       "mcp__supabasex",
       "Bash(npm install *)",
       "Bash(npx husky *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "mcp__shrimp-task-manager__execute_task",
+      "mcp__shrimp-task-manager__verify_task",
+      "Skill(docs:update-roadmap)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -57,7 +57,7 @@ export default async function JoinPage({
           <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar size={14} />
-              <span>{formatDateFull(event.event_date)}</span>
+              <span>{formatDateFull(event.start_at)}</span>
             </div>
             <div className="flex items-center gap-2">
               <MapPin size={14} />
