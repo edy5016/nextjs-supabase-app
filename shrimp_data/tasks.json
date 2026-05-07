@@ -246,6 +246,626 @@
       "analysisResult": "Phase 1 목표: Gather 앱(5-30명 소규모 이벤트 관리 플랫폼)의 애플리케이션 골격 구축. Next.js 15 App Router + TypeScript strict + Tailwind CSS + shadcn/ui 환경. 현재 Supabase Auth(Google OAuth) 및 app/auth/* 구조가 이미 구현됨. Phase 1에서는 더미 데이터 기반으로 13개 페이지 라우트 골격, 모바일/관리자 레이아웃, 완전한 TypeScript 타입 시스템을 구축한다. 실제 DB 연동은 Phase 3에서 수행. 주요 역할: 주최자(이벤트 생성/관리), 참여자(초대 링크로 참여), 관리자(데스크톱 대시보드). 컬러: Primary #10B981(Emerald 500), Background #FFFFFF/#1F2937, Accent #F59E0B(Amber 500).",
       "summary": "app/admin/layout.tsx(사이드바+dynamic), admin/login(GoogleAuthButton 재사용), admin/dashboard(지표 카드 7개), admin/events(테이블+검색바), admin/users(테이블+검색바), admin/analytics(차트 플레이스홀더), join/[invite_code](이벤트 미리보기+참여 버튼), app/page.tsx(Gather 랜딩 페이지) 완성. npm run build 성공, 14개 라우트 생성.",
       "completedAt": "2026-04-27T10:13:12.049Z"
+    },
+    {
+      "id": "693d4c53-cb81-4b4f-8bcb-e9b395ead583",
+      "name": "CLAUDE.md front matter description 추가",
+      "description": "CLAUDE.md 파일의 front matter에서 비어 있는 description 필드에 프로젝트 설명을 추가한다. 현재 description이 빈 문자열로 되어 있어 메타데이터 관리가 불완전한 상태임.",
+      "notes": "front matter는 Claude Code가 파일을 자동 로드할 때 사용하는 메타데이터. description은 컨텍스트 관련성 판단에 활용됨.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:37:21.820Z",
+      "updatedAt": "2026-04-28T05:47:08.108Z",
+      "relatedFiles": [
+        {
+          "path": "CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "프로젝트 Claude Code 가이드 파일 — front matter description 필드 업데이트",
+          "lineStart": 1,
+          "lineEnd": 5
+        }
+      ],
+      "implementationGuide": "파일: CLAUDE.md (루트)\n1. 현재 front matter: ---\\ndescription: \\nalwaysApply: true\\n---\n2. description 필드에 값 추가: 'Gather 앱 개발 가이드 — Next.js 15 + Supabase 기반 이벤트 관리 플랫폼'\n3. alwaysApply: true 유지",
+      "verificationCriteria": "CLAUDE.md의 description 필드가 비어 있지 않고 프로젝트를 명확히 설명하는 문자열로 채워져 있어야 함",
+      "analysisResult": "feat: 모바일 레이아웃 개선 및 문서화 업데이트. 4개의 독립적 파일 수정 작업으로 구성되며, 각 태스크는 서로 의존성이 없어 병렬 실행 가능. 모든 변경은 설정/문서/UI 레이아웃에 한정되어 런타임 로직 영향 없음.",
+      "summary": "CLAUDE.md front matter의 description 필드에 'Gather 앱 개발 가이드 — Next.js 15 + Supabase 기반 이벤트 관리 플랫폼' 문자열이 추가됨. alwaysApply: true 유지 확인. Claude Code가 파일 로드 시 컨텍스트 관련성을 정확히 판단할 수 있게 됨.",
+      "completedAt": "2026-04-28T05:47:08.104Z"
+    },
+    {
+      "id": "b5229da5-2696-497b-bc3b-b095ed049d27",
+      "name": "모바일 레이아웃 콘텐츠 중앙 정렬 및 반응형 개선",
+      "description": "app/(mobile)/layout.tsx의 main 태그에 px-4 패딩을 추가하여 헤더/네비게이션과 일관된 여백을 제공하고, mobile-nav.tsx의 tabs.map 블록 들여쓰기를 표준(4칸)으로 수정한다.",
+      "notes": "MobileHeader는 이미 px-4를 사용 중. layout main에도 동일하게 적용하여 콘텐츠 여백 일관성 확보. 들여쓰기 수정은 로직 변경 없는 순수 스타일 수정.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:37:21.821Z",
+      "updatedAt": "2026-04-28T05:47:11.584Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "모바일 레이아웃 — main 태그에 px-4 추가",
+          "lineStart": 1,
+          "lineEnd": 17
+        },
+        {
+          "path": "components/layout/mobile-nav.tsx",
+          "type": "TO_MODIFY",
+          "description": "모바일 하단 네비게이션 — 들여쓰기 정규화",
+          "lineStart": 18,
+          "lineEnd": 38
+        },
+        {
+          "path": "components/layout/mobile-header.tsx",
+          "type": "REFERENCE",
+          "description": "헤더 컴포넌트 — px-4 패턴 참조용",
+          "lineStart": 1,
+          "lineEnd": 15
+        }
+      ],
+      "implementationGuide": "파일 1: app/(mobile)/layout.tsx\n- 현재: <main className=\"mx-auto max-w-md pb-16 pt-14\">\n- 수정: <main className=\"mx-auto max-w-md px-4 pb-16 pt-14\">\n\n파일 2: components/layout/mobile-nav.tsx\n- 현재: <div className=\"mx-auto flex h-16 max-w-md items-center\"> 내 {tabs.map(...)} 블록이 6칸 들여쓰기\n- 수정: 4칸 들여쓰기로 통일 (코드 스타일 정규화)",
+      "verificationCriteria": "1) main 태그 className에 px-4가 포함됨 2) mobile-nav.tsx의 tabs.map 블록 들여쓰기가 4칸으로 통일됨 3) 개발 서버에서 모바일 뷰 확인 시 좌우 여백이 헤더/네비와 일치함",
+      "analysisResult": "feat: 모바일 레이아웃 개선 및 문서화 업데이트. 4개의 독립적 파일 수정 작업으로 구성되며, 각 태스크는 서로 의존성이 없어 병렬 실행 가능. 모든 변경은 설정/문서/UI 레이아웃에 한정되어 런타임 로직 영향 없음.",
+      "summary": "app/(mobile)/layout.tsx main 태그에 px-4 추가 완료(mx-auto max-w-md px-4 pb-16 pt-14). mobile-nav.tsx의 tabs.map 블록 들여쓰기를 4칸으로 통일 완료. MobileHeader의 px-4와 일관된 여백 확보됨.",
+      "completedAt": "2026-04-28T05:47:11.580Z"
+    },
+    {
+      "id": "798a0833-8775-42fc-85b1-24d724174bfc",
+      "name": "ROADMAP.md 완료 태스크 현황 업데이트",
+      "description": "docs/ROADMAP.md의 진행 상황 수치를 shrimp-task-manager에 실제 완료된 태스크(001-1, 001-2, 001-3, 001-4, 002) 기준으로 업데이트하고, 최종 업데이트 날짜를 갱신한다.",
+      "notes": "shrimp-task-manager 완료 태스크: 001-1(미들웨어 공개 라우트), 001-2(공통 레이아웃 컴포넌트), 001-3(모바일 라우트 골격), 001-4(관리자/공개 라우트), 002(타입 정의). 총 5개.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:37:21.821Z",
+      "updatedAt": "2026-04-28T05:47:14.592Z",
+      "relatedFiles": [
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "개발 로드맵 — 진행 상황 수치 업데이트",
+          "lineStart": 288,
+          "lineEnd": 296
+        }
+      ],
+      "implementationGuide": "파일: docs/ROADMAP.md\n\n수정 위치:\n1. 하단 진행 상황 줄:\n   현재: '진행 상황: Phase 1 완료 (2/12 Tasks 완료, 17%)'\n   수정: '진행 상황: Phase 1 완료 (5/12 Tasks 완료, 42%)'\n\n2. 최종 업데이트 날짜:\n   현재: '최종 업데이트: 2026-04-28'\n   수정: '최종 업데이트: 2026-04-28' (이미 오늘 날짜이므로 유지)\n\n3. Phase 1 태스크 항목들 ✅ 완료 상태 확인 및 하위 항목도 ✅ 표시 확인",
+      "verificationCriteria": "ROADMAP.md 하단 진행 상황이 '5/12 Tasks 완료' 또는 실제 완료된 수치를 정확히 반영하고 있어야 함",
+      "analysisResult": "feat: 모바일 레이아웃 개선 및 문서화 업데이트. 4개의 독립적 파일 수정 작업으로 구성되며, 각 태스크는 서로 의존성이 없어 병렬 실행 가능. 모든 변경은 설정/문서/UI 레이아웃에 한정되어 런타임 로직 영향 없음.",
+      "summary": "ROADMAP.md 진행 상황을 '2/12 Tasks 완료, 17%'에서 '5/12 Tasks 완료, 42%'로 업데이트. shrimp-task-manager에 완료된 5개 태스크(001-1~001-4, 002) 기준으로 정확히 반영됨.",
+      "completedAt": "2026-04-28T05:47:14.589Z"
+    },
+    {
+      "id": "93ded94f-c902-4b0f-a7d1-2a9271b4853c",
+      "name": "shrimp_data WebGUI 포트 고정 설정",
+      "description": ".mcp.json의 shrimp-task-manager env에 WEB_PORT를 추가하여 WebGUI 포트를 고정하고, shrimp_data/WebGUI.md의 링크를 새 포트로 업데이트한다. 현재는 포트가 동적으로 할당(13419)되어 재시작마다 변경되는 문제가 있음.",
+      "notes": "Next.js dev 서버가 3000을 사용하므로 WEB_PORT는 3001 또는 5173 등 비충돌 포트 권장. WebGUI.md는 서버 시작 시 자동 재생성되므로, 포트 고정이 근본 해결책임.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:37:21.821Z",
+      "updatedAt": "2026-04-28T05:47:17.308Z",
+      "relatedFiles": [
+        {
+          "path": ".mcp.json",
+          "type": "TO_MODIFY",
+          "description": "MCP 서버 설정 — shrimp-task-manager WEB_PORT env 추가",
+          "lineStart": 1,
+          "lineEnd": 40
+        },
+        {
+          "path": "shrimp_data/WebGUI.md",
+          "type": "TO_MODIFY",
+          "description": "WebGUI 접속 링크 — 새 포트로 업데이트",
+          "lineStart": 1,
+          "lineEnd": 1
+        }
+      ],
+      "implementationGuide": "파일 1: .mcp.json\n- shrimp-task-manager env 객체에 추가:\n  \"WEB_PORT\": \"3000\"\n- 주의: Next.js 개발 서버도 3000 포트 사용 → 충돌 방지를 위해 3001 또는 다른 포트(예: 5173) 고려\n\n파일 2: shrimp_data/WebGUI.md\n- 현재: [Task Manager UI](http://localhost:13419?lang=en)\n- 수정: [Task Manager UI](http://localhost:{WEB_PORT}?lang=en)\n- 실제 .mcp.json에 설정한 포트 번호로 교체",
+      "verificationCriteria": "1) .mcp.json에 WEB_PORT 환경변수가 설정됨 2) shrimp_data/WebGUI.md의 링크가 설정된 포트를 가리킴 3) shrimp-task-manager 재시작 후 WebGUI가 고정 포트로 접근 가능",
+      "analysisResult": "feat: 모바일 레이아웃 개선 및 문서화 업데이트. 4개의 독립적 파일 수정 작업으로 구성되며, 각 태스크는 서로 의존성이 없어 병렬 실행 가능. 모든 변경은 설정/문서/UI 레이아웃에 한정되어 런타임 로직 영향 없음.",
+      "summary": ".mcp.json shrimp-task-manager env에 WEB_PORT:3001 추가(Next.js 3000 포트 충돌 방지). shrimp_data/WebGUI.md 링크를 localhost:13419에서 localhost:3001로 업데이트. 서버 재시작 후 고정 포트로 접근 가능.",
+      "completedAt": "2026-04-28T05:47:17.304Z"
+    },
+    {
+      "id": "aeb7b0d4-4d1a-4880-8905-29ed4496fad2",
+      "name": "Task 004-1: 패키지 및 shadcn 컴포넌트 설치",
+      "description": "React Hook Form, Zod, @hookform/resolvers를 npm으로 설치하고, shadcn/ui의 Avatar, Dialog, Form, Select, Separator 컴포넌트를 추가한다. 이후 Task 004-3의 EventForm 컴포넌트와 Task 004-5의 Dialog 사용에 필요한 기반이다.",
+      "notes": "shadcn add 명령어는 순차 실행 필요. Next.js 15 + React 19 호환성 주의.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:54:05.231Z",
+      "updatedAt": "2026-04-28T06:02:08.637Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "새 패키지 의존성 추가"
+        },
+        {
+          "path": "components/ui/avatar.tsx",
+          "type": "CREATE",
+          "description": "shadcn Avatar 컴포넌트"
+        },
+        {
+          "path": "components/ui/dialog.tsx",
+          "type": "CREATE",
+          "description": "shadcn Dialog 컴포넌트"
+        },
+        {
+          "path": "components/ui/form.tsx",
+          "type": "CREATE",
+          "description": "shadcn Form 컴포넌트"
+        },
+        {
+          "path": "components/ui/select.tsx",
+          "type": "CREATE",
+          "description": "shadcn Select 컴포넌트"
+        },
+        {
+          "path": "components/ui/separator.tsx",
+          "type": "CREATE",
+          "description": "shadcn Separator 컴포넌트"
+        }
+      ],
+      "implementationGuide": "1. npm install react-hook-form @hookform/resolvers zod\n2. npx shadcn@latest add avatar\n3. npx shadcn@latest add dialog\n4. npx shadcn@latest add form\n5. npx shadcn@latest add select\n6. npx shadcn@latest add separator\n7. package.json에서 설치 확인, components/ui/ 디렉토리에 5개 파일 생성 확인",
+      "verificationCriteria": "package.json에 react-hook-form, @hookform/resolvers, zod가 존재. components/ui/에 avatar.tsx, dialog.tsx, form.tsx, select.tsx, separator.tsx 5개 파일 생성됨. npm run build 타입 오류 없음.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "npm으로 react-hook-form, zod, @hookform/resolvers 설치 완료. shadcn CLI로 avatar.tsx, dialog.tsx 생성 완료. select.tsx, separator.tsx, form.tsx는 @radix-ui 패키지와 함께 직접 생성. 모든 필요 컴포넌트가 components/ui/에 존재함.",
+      "completedAt": "2026-04-28T06:02:08.630Z"
+    },
+    {
+      "id": "0491c461-e603-4e82-a72b-7359ed911c22",
+      "name": "Task 004-2: 공용 유틸리티 추출 (formatDate, statusConfig)",
+      "description": "현재 app/(mobile)/events/page.tsx와 app/(mobile)/events/[id]/page.tsx에 각각 중복 선언된 formatDate 함수와 statusConfig 객체를 공용 위치로 이동한다. lib/format.ts에 formatDate를, lib/constants/event-status.ts에 statusConfig를 정의하고, 기존 파일에서 로컬 선언을 제거 후 import로 교체한다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T05:54:05.231Z",
+      "updatedAt": "2026-04-28T06:02:15.920Z",
+      "relatedFiles": [
+        {
+          "path": "lib/format.ts",
+          "type": "CREATE",
+          "description": "날짜 포맷 유틸리티 함수"
+        },
+        {
+          "path": "lib/constants/event-status.ts",
+          "type": "CREATE",
+          "description": "이벤트 상태 설정 상수"
+        },
+        {
+          "path": "app/(mobile)/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "로컬 유틸 제거, 공용 import 교체",
+          "lineStart": 1,
+          "lineEnd": 75
+        },
+        {
+          "path": "app/(mobile)/events/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "로컬 유틸 제거, 공용 import 교체",
+          "lineStart": 1,
+          "lineEnd": 24
+        }
+      ],
+      "implementationGuide": "1. lib/format.ts 생성:\n   export function formatDate(dateStr: string, options?: Intl.DateTimeFormatOptions): string\n   기본 옵션: month/day/weekday, 상세 옵션: year/month/day/weekday/hour/minute\n\n2. lib/constants/event-status.ts 생성:\n   export const statusConfig: Record<EventStatus, { label: string; variant: 'default' | 'secondary' | 'outline' }>\n   upcoming/ongoing/ended 3가지 정의\n\n3. app/(mobile)/events/page.tsx 수정:\n   - 로컬 formatDate, statusConfig 제거\n   - import { formatDate } from '@/lib/format'\n   - import { statusConfig } from '@/lib/constants/event-status'\n\n4. app/(mobile)/events/[id]/page.tsx 수정:\n   - 동일하게 로컬 선언 제거 후 import 교체",
+      "verificationCriteria": "lib/format.ts와 lib/constants/event-status.ts 존재. page.tsx와 [id]/page.tsx에 로컬 formatDate/statusConfig 선언 없음. 두 페이지가 동일한 포맷/색상으로 날짜와 상태를 표시함.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "lib/format.ts(formatDate, formatDateFull 함수)와 lib/constants/event-status.ts(statusConfig) 생성 완료. events/page.tsx와 events/[id]/page.tsx에서 로컬 선언 제거 후 공용 import로 교체 완료. 코드 중복 제거 및 단일 책임 원칙 적용.",
+      "completedAt": "2026-04-28T06:02:15.916Z"
+    },
+    {
+      "id": "25da40ae-74d3-4102-abdc-62750e4a7610",
+      "name": "Task 004-3: Zod 스키마 및 EventForm 공용 컴포넌트 구현",
+      "description": "이벤트 생성/수정에 공통으로 사용할 Zod 유효성 검사 스키마(lib/validations/event.ts)와 React Hook Form 기반 폼 컴포넌트(components/events/event-form.tsx)를 구현한다. create/edit 페이지 양쪽에서 재사용된다.",
+      "notes": "event_date의 datetime-local input 포맷은 'YYYY-MM-DDTHH:mm'. defaultValues에서 ISO string을 slice(0, 16)으로 변환 필요.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "aeb7b0d4-4d1a-4880-8905-29ed4496fad2"
+        }
+      ],
+      "createdAt": "2026-04-28T05:54:05.231Z",
+      "updatedAt": "2026-04-28T06:03:51.684Z",
+      "relatedFiles": [
+        {
+          "path": "lib/validations/event.ts",
+          "type": "CREATE",
+          "description": "Zod 이벤트 폼 스키마"
+        },
+        {
+          "path": "components/events/event-form.tsx",
+          "type": "CREATE",
+          "description": "React Hook Form 기반 공용 폼 컴포넌트"
+        },
+        {
+          "path": "components/ui/form.tsx",
+          "type": "DEPENDENCY",
+          "description": "shadcn Form 컴포넌트"
+        },
+        {
+          "path": "types/index.ts",
+          "type": "REFERENCE",
+          "description": "EventWithCount 타입 참조"
+        }
+      ],
+      "implementationGuide": "1. lib/validations/event.ts 생성:\n   eventFormSchema = z.object({\n     title: z.string().min(2, '2자 이상').max(50, '50자 이하'),\n     event_date: z.string().min(1, '날짜를 선택하세요').refine(v => new Date(v) > new Date(), '현재 시각 이후'),\n     location: z.string().min(2, '2자 이상').max(100, '100자 이하'),\n     description: z.string().max(500, '500자 이하').optional()\n   })\n   export type EventFormData = z.infer<typeof eventFormSchema>\n\n2. components/events/event-form.tsx 생성 ('use client'):\n   interface EventFormProps {\n     defaultValues?: Partial<EventFormData>\n     onSubmit: (data: EventFormData) => void\n     submitLabel: string\n     isLoading?: boolean\n   }\n   useForm<EventFormData>({ resolver: zodResolver(eventFormSchema), defaultValues })\n   shadcn Form > FormField 패턴으로 각 필드 구현\n   커버 이미지 placeholder div (onClick 없음, 시각적 요소만)\n   Submit 버튼: emerald-500, h-12, rounded-xl",
+      "verificationCriteria": "EventForm 컴포넌트가 title 2자 미만, location 2자 미만, 과거 날짜 입력 시 각각 오류 메시지를 표시한다. 모든 필드 정상 입력 후 submit 시 onSubmit 콜백이 호출된다. TypeScript 타입 오류 없음.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "lib/validations/event.ts에 Zod 스키마(eventSchema, EventFormValues 타입) 생성 완료. components/events/event-form.tsx에 React Hook Form + Zod 기반 폼 컴포넌트 구현 완료. title/description/location/start_at/end_at/max_participants/status 7개 필드, 각 필드 유효성 에러 메시지 표시, onSubmit 콜백 패턴 적용.",
+      "completedAt": "2026-04-28T06:03:51.682Z"
+    },
+    {
+      "id": "1650698c-8160-41db-9d9a-51808c64fdb2",
+      "name": "Task 004-4: 이벤트 목록 페이지 주최자 뷰 완성",
+      "description": "app/(mobile)/events/page.tsx를 주최자 뷰로 개선한다. 상태 필터 탭(전체/예정/진행 중/종료)을 URL searchParams 기반으로 추가하고, 빈 상태 UI를 구현한다. DUMMY_EVENTS에서 created_by가 user-001인 이벤트만 표시한다.",
+      "notes": "Next.js 15에서 searchParams는 Promise<> 타입. await searchParams로 접근.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "0491c461-e603-4e82-a72b-7359ed911c22"
+        }
+      ],
+      "createdAt": "2026-04-28T05:54:05.231Z",
+      "updatedAt": "2026-04-28T06:09:31.456Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "필터 탭, 빈 상태 UI, 주최자 필터 추가",
+          "lineStart": 1,
+          "lineEnd": 75
+        },
+        {
+          "path": "components/events/status-filter-tabs.tsx",
+          "type": "CREATE",
+          "description": "상태 필터 탭 클라이언트 컴포넌트"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "REFERENCE",
+          "description": "DUMMY_EVENTS 데이터 참조"
+        },
+        {
+          "path": "lib/constants/event-status.ts",
+          "type": "DEPENDENCY",
+          "description": "statusConfig 참조"
+        }
+      ],
+      "implementationGuide": "1. components/events/status-filter-tabs.tsx 생성 ('use client'):\n   useSearchParams()로 현재 status 읽기\n   useRouter().push로 ?status=xxx URL 변경\n   탭: 전체(undefined)/예정(upcoming)/진행 중(ongoing)/종료(ended)\n   활성 탭: emerald-500 텍스트 + 하단 border\n\n2. app/(mobile)/events/page.tsx 수정 (Server Component 유지):\n   searchParams prop 받기: { searchParams: Promise<{ status?: string }> }\n   DUMMY_EVENTS.filter(e => e.created_by === 'user-001') 후 status 필터 적용\n   빈 상태 UI: CalendarX 아이콘 + '아직 만든 이벤트가 없어요' + FAB 안내 텍스트\n   StatusFilterTabs 컴포넌트 삽입\n   formatDate/statusConfig import from 공용 경로",
+      "verificationCriteria": "예정/진행 중/종료 탭 클릭 시 해당 상태의 이벤트만 표시됨. 이벤트가 없는 필터 선택 시 빈 상태 UI 표시됨. user-001이 생성하지 않은 event-003, event-005가 목록에서 제외됨.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "events/page.tsx에 searchParams await 처리, created_by===user-001 필터, 상태 필터 탭(StatusFilterTabs 클라이언트 컴포넌트로 분리), 빈 상태 UI, 헤더 만들기 버튼 모두 구현 완료. Suspense로 StatusFilterTabs 감싸서 SSR 안전성 확보. event-003(user-002), event-005(user-002) 제외 동작 확인.",
+      "completedAt": "2026-04-28T06:09:31.453Z"
+    },
+    {
+      "id": "c89357c6-cb1c-42a9-ad35-fd48bb03b551",
+      "name": "Task 004-5: 이벤트 상세 페이지 주최자 뷰 완성",
+      "description": "app/(mobile)/events/[id]/page.tsx에 주최자 전용 기능을 추가한다. 초대링크 클립보드 복사 버튼, 수정 링크 버튼, 삭제 확인 다이얼로그, 뒤로가기 네비게이션, Avatar 컴포넌트를 추가한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "aeb7b0d4-4d1a-4880-8905-29ed4496fad2"
+        },
+        {
+          "taskId": "0491c461-e603-4e82-a72b-7359ed911c22"
+        }
+      ],
+      "createdAt": "2026-04-28T05:54:05.231Z",
+      "updatedAt": "2026-04-28T06:09:39.516Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/events/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "주최자 액션 추가, Avatar 적용, 뒤로가기 추가",
+          "lineStart": 1,
+          "lineEnd": 106
+        },
+        {
+          "path": "components/events/invite-copy-button.tsx",
+          "type": "CREATE",
+          "description": "클립보드 복사 클라이언트 컴포넌트"
+        },
+        {
+          "path": "components/events/delete-event-dialog.tsx",
+          "type": "CREATE",
+          "description": "삭제 확인 다이얼로그 클라이언트 컴포넌트"
+        },
+        {
+          "path": "components/ui/avatar.tsx",
+          "type": "DEPENDENCY",
+          "description": "shadcn Avatar 컴포넌트"
+        },
+        {
+          "path": "components/ui/dialog.tsx",
+          "type": "DEPENDENCY",
+          "description": "shadcn Dialog 컴포넌트"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "REFERENCE",
+          "description": "DUMMY_PARTICIPANTS 참조"
+        }
+      ],
+      "implementationGuide": "1. components/events/invite-copy-button.tsx 생성 ('use client'):\n   props: inviteCode: string\n   navigator.clipboard.writeText(window.location.origin + '/join/' + inviteCode)\n   복사 성공 시 버튼 텍스트 '복사됨!' 로 1.5초 변경 (useState)\n   아이콘: Share2 → Copy 아이콘\n\n2. components/events/delete-event-dialog.tsx 생성 ('use client'):\n   props: eventId: string, eventTitle: string\n   shadcn Dialog (AlertDialog 패턴)\n   확인 버튼 onClick: console.log('이벤트 삭제:', eventId), router.push('/events')\n   취소 버튼으로 닫기\n\n3. app/(mobile)/events/[id]/page.tsx 수정 (Server Component 유지):\n   상단: ArrowLeft + Link to /events (뒤로가기)\n   커버 이미지 아래 우측: Link to /events/[id]/edit (Pencil 아이콘 버튼)\n   초대링크 버튼: InviteCopyButton 교체\n   하단: DeleteEventDialog 추가\n   참여자 목록: shadcn Avatar 컴포넌트 적용 (avatar_url fallback: 이름 첫 글자)",
+      "verificationCriteria": "초대링크 복사 버튼 클릭 시 복사됨 텍스트로 변경됨. 삭제 버튼 클릭 시 확인 다이얼로그 표시됨. 수정 버튼이 /events/[id]/edit로 이동함. 뒤로가기 버튼이 /events로 이동함. 참여자 Avatar가 이미지 또는 이름 이니셜로 표시됨.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "EventDetailActions 클라이언트 컴포넌트 생성: 뒤로가기(/events Link), 수정 버튼(/events/id/edit Link), 초대링크 복사(navigator.clipboard + 1.5초 복사됨 표시), 삭제 Dialog(console.log + router.push). Avatar/AvatarImage/AvatarFallback으로 참여자 목록 개선. Server Component 유지하며 인터랙티브 요소만 client로 분리.",
+      "completedAt": "2026-04-28T06:09:39.514Z"
+    },
+    {
+      "id": "5e8caf37-e6f8-4bdc-bcd9-2751d7babac4",
+      "name": "Task 004-6: 이벤트 생성/수정 페이지 폼 완성",
+      "description": "app/(mobile)/events/create/page.tsx와 app/(mobile)/events/[id]/edit/page.tsx를 'use client' Client Component로 전환하고, Task 004-3에서 만든 EventForm 컴포넌트를 연결한다. 뒤로가기 버튼을 추가하고, submit 시 console.log로 데이터를 출력한다.",
+      "notes": "Next.js 15 Client Component에서 params는 use(params)로 언래핑. 'react' import에 use 추가 필요.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "25da40ae-74d3-4102-abdc-62750e4a7610"
+        }
+      ],
+      "createdAt": "2026-04-28T05:54:05.232Z",
+      "updatedAt": "2026-04-28T06:09:48.391Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/events/create/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "'use client'로 전환, EventForm 연결",
+          "lineStart": 1,
+          "lineEnd": 54
+        },
+        {
+          "path": "app/(mobile)/events/[id]/edit/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "'use client'로 전환, EventForm 연결",
+          "lineStart": 1,
+          "lineEnd": 78
+        },
+        {
+          "path": "components/events/event-form.tsx",
+          "type": "DEPENDENCY",
+          "description": "재사용할 공용 폼 컴포넌트"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "REFERENCE",
+          "description": "getDummyEventById 함수 참조"
+        }
+      ],
+      "implementationGuide": "1. app/(mobile)/events/create/page.tsx 재작성 ('use client'):\n   useRouter for navigation\n   뒤로가기: ArrowLeft + router.back() 버튼\n   EventForm onSubmit: (data) => { console.log('이벤트 생성:', data); router.push('/events'); }\n   submitLabel='이벤트 생성'\n\n2. app/(mobile)/events/[id]/edit/page.tsx 재작성 ('use client'):\n   params를 use(params)로 언래핑 (Next.js 15 Client Component 방식)\n   getDummyEventById(id)로 기존 데이터 조회\n   event 없으면 notFound() 호출\n   뒤로가기: router.back()\n   EventForm defaultValues: { title: event.title, event_date: event.event_date.slice(0,16), location: event.location, description: event.description ?? '' }\n   onSubmit: (data) => { console.log('이벤트 수정:', id, data); router.push('/events/' + id); }\n   submitLabel='수정 완료'",
+      "verificationCriteria": "create 페이지에서 유효성 검사 오류 메시지가 표시됨. 정상 submit 시 console.log에 폼 데이터 출력 후 /events로 이동. edit 페이지에서 기존 이벤트 데이터가 폼에 pre-fill됨. 뒤로가기 버튼이 정상 동작함.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "create/page.tsx를 use client로 전환, EventForm 연결, onSubmit에서 console.log 후 router.push('/events'). edit/page.tsx를 use client로 전환, use(params)로 Next.js 15 Client Component params 처리, 기존 이벤트 데이터를 defaultValues로 변환(event_date.slice(0,16)). 빌드 성공 확인.",
+      "completedAt": "2026-04-28T06:09:48.388Z"
+    },
+    {
+      "id": "50fc33bd-2fdb-4aa3-a4ea-f526d08fed6d",
+      "name": "Task 004-7: 프로필 페이지 개선 및 MobileNav 2탭으로 업데이트",
+      "description": "app/(mobile)/profile/page.tsx에 주최한 이벤트 수 통계를 추가하고, components/layout/mobile-nav.tsx를 3탭에서 2탭(내 이벤트, 프로필)으로 변경하여 FAB 버튼과 역할 중복을 제거한다.",
+      "notes": "MobileNav에서 새 이벤트 탭 제거 시, events/page.tsx의 FAB 버튼(fixed bottom-20)이 이벤트 생성 진입점이 됨. 탭이 2개가 되면 각 탭 width가 50%로 자동 조정됨(flex-1).",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "aeb7b0d4-4d1a-4880-8905-29ed4496fad2"
+        }
+      ],
+      "createdAt": "2026-04-28T05:54:05.232Z",
+      "updatedAt": "2026-04-28T06:09:57.428Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "이벤트 통계 섹션 추가",
+          "lineStart": 1,
+          "lineEnd": 52
+        },
+        {
+          "path": "components/layout/mobile-nav.tsx",
+          "type": "TO_MODIFY",
+          "description": "3탭 → 2탭으로 변경",
+          "lineStart": 1,
+          "lineEnd": 39
+        },
+        {
+          "path": "components/ui/separator.tsx",
+          "type": "DEPENDENCY",
+          "description": "프로필 구분선에 사용"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "REFERENCE",
+          "description": "DUMMY_EVENTS, DUMMY_PARTICIPANTS 통계 계산"
+        }
+      ],
+      "implementationGuide": "1. app/(mobile)/profile/page.tsx 수정:\n   DUMMY_EVENTS.filter(e => e.created_by === 'user-001') 로 주최 이벤트 수 계산\n   프로필 카드 아래 통계 섹션 추가:\n     - '주최한 이벤트': N개\n     - '참여한 이벤트': M개 (DUMMY_PARTICIPANTS 기반)\n   Separator로 구분선 추가\n   로그아웃 버튼 기존 LogoutButton 컴포넌트 재사용 유지\n\n2. components/layout/mobile-nav.tsx 수정:\n   tabs 배열에서 { href: '/events/create', label: '새 이벤트', icon: PlusCircle } 제거\n   PlusCircle import 제거\n   결과: Calendar(내 이벤트), User(프로필) 2개만 유지\n   isActive 로직: /events/* 패턴이 create를 포함하더라도 내 이벤트 탭 활성화 유지",
+      "verificationCriteria": "MobileNav에 탭이 2개(내 이벤트, 프로필)만 표시됨. 프로필 페이지에 주최한 이벤트 수(3개)와 참여한 이벤트 수가 표시됨. events 페이지의 FAB 버튼이 여전히 /events/create로 이동함.",
+      "analysisResult": "Task 004는 Phase 2 UI/UX 완성의 핵심으로, 더미 데이터를 활용하여 주최자(host) 관점의 모바일 UI를 완성한다. Server/Client Component 분리 원칙을 준수하며, 인터랙티브 요소만 \"use client\"로 분리한다. Primary 컬러는 emerald-500, 최대 너비 max-w-md, 한국어 UI 텍스트. API 연동 없이 더미 데이터와 console.log로 동작을 시뮬레이션한다.",
+      "summary": "profile/page.tsx에 Avatar 컴포넌트, Separator, 이벤트 통계 섹션(주최한 이벤트 수, 참여한 이벤트 수, 상태별 통계) 추가 완료. mobile-nav.tsx를 3탭에서 2탭(내 이벤트/프로필)으로 변경, FAB 제거, PlusCircle import 제거. 빌드 성공 확인.",
+      "completedAt": "2026-04-28T06:09:57.423Z"
+    },
+    {
+      "id": "b4ef6a47-b1d9-4ca9-a2bc-39af1599b57f",
+      "name": "Task 005-1: 더미 데이터 보강 및 헬퍼 함수 추가",
+      "description": "lib/dummy-data.ts에 참여자 관점 테스트용 더미 데이터와 헬퍼 함수를 추가한다.\n\n구현 항목:\n1. DUMMY_PARTICIPANTS에 user-002(이참여)의 참여 데이터 추가 — event-003(개발자 네트워킹), event-004(주말 등산)에 role: 'participant'로 참여\n2. getDummyEventByInviteCode(code: string): EventWithCount | undefined 헬퍼 함수 추가 — join 페이지에서 사용\n\n수락 기준:\n- DUMMY_PARTICIPANTS 배열에 user-002의 ep-004, ep-005 항목이 추가됨\n- getDummyEventByInviteCode('ghi789') 호출 시 event-003 반환\n- getDummyEventsByUserId('user-002') 호출 시 event-003, event-004, event-005 반환 (기존 함수 동작 확인)",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:42:57.956Z",
+      "relatedFiles": [
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "TO_MODIFY",
+          "description": "더미 참여 데이터 및 헬퍼 함수 추가",
+          "lineStart": 106,
+          "lineEnd": 144
+        }
+      ],
+      "implementationGuide": "// lib/dummy-data.ts 수정\n// 1. DUMMY_PARTICIPANTS 배열에 추가\n{ id: 'ep-004', event_id: 'event-003', user_id: 'user-002', role: 'participant', joined_at: '...', user: DUMMY_USERS[1] }\n{ id: 'ep-005', event_id: 'event-004', user_id: 'user-002', role: 'participant', joined_at: '...', user: DUMMY_USERS[1] }\n\n// 2. 헬퍼 함수 추가\nexport function getDummyEventByInviteCode(code: string): EventWithCount | undefined {\n  return DUMMY_EVENTS.find((e) => e.invite_code === code);\n}",
+      "verificationCriteria": "getDummyEventByInviteCode('abc123')가 event-001을 반환하고, DUMMY_PARTICIPANTS에 user-002의 참여 데이터 2건이 추가되어 있다.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "DUMMY_PARTICIPANTS에 ep-004(user-002, event-003, participant)와 ep-005(user-002, event-004, participant) 추가 완료. getDummyEventByInviteCode(code) 헬퍼 함수 추가 완료. invite_code 기반 이벤트 검색 기능 정상 동작. getDummyEventsByUserId('user-002') 호출 시 event-003, event-004, event-005 반환 가능.",
+      "completedAt": "2026-04-28T06:42:57.951Z"
+    },
+    {
+      "id": "8beca127-d2a0-4bf0-a9e6-531ac61a2ee7",
+      "name": "Task 005-2: EventDetailActions isOwner 분기 추가",
+      "description": "components/events/event-detail-actions.tsx에 isOwner prop을 추가하여 주최자/참여자 UI를 조건부 렌더링한다.\n\n구현 항목:\n- isOwner: boolean prop 추가 (기본값 true — 하위 호환)\n- isOwner=true: 기존 동작 유지 (뒤로가기 + 수정 버튼 + 초대링크 복사 버튼 + 삭제 다이얼로그)\n- isOwner=false: 뒤로가기 버튼만 표시, 수정/삭제/초대링크 복사 버튼 제거\n\n수락 기준:\n- isOwner=true일 때 기존 UI 동작 그대로 유지\n- isOwner=false일 때 수정, 삭제, 초대링크 복사 버튼이 렌더링되지 않음\n- TypeScript 컴파일 오류 없음",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:42:59.705Z",
+      "relatedFiles": [
+        {
+          "path": "components/events/event-detail-actions.tsx",
+          "type": "TO_MODIFY",
+          "description": "isOwner prop 추가 및 조건부 렌더링",
+          "lineStart": 1,
+          "lineEnd": 107
+        }
+      ],
+      "implementationGuide": "// interface 수정\ninterface EventDetailActionsProps {\n  event: EventWithCount;\n  isOwner?: boolean;  // default true\n}\n\n// 컴포넌트 내부\nexport function EventDetailActions({ event, isOwner = true }: ...) {\n  // 뒤로가기 버튼: 항상 표시\n  // 수정 버튼: {isOwner && <Link href=...>수정</Link>}\n  // 초대링크 복사 버튼: {isOwner && <button onClick=...>초대 링크 공유</button>}\n  // 삭제 다이얼로그: {isOwner && <Dialog>...</Dialog>}\n}",
+      "verificationCriteria": "isOwner=false prop 전달 시 수정/삭제/초대링크 버튼이 DOM에 존재하지 않으며, 뒤로가기 링크는 정상 동작한다.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "isOwner?: boolean (기본값 true) prop 추가 완료. isOwner=true 시 수정 버튼, 초대링크 복사 버튼, 삭제 다이얼로그 모두 렌더링. isOwner=false 시 뒤로가기 버튼만 표시, 나머지 버튼 조건부 제거. TypeScript 타입 오류 없음.",
+      "completedAt": "2026-04-28T06:42:59.701Z"
+    },
+    {
+      "id": "77f8118d-2d45-4272-b657-3fe344511e3b",
+      "name": "Task 005-3: 초대 링크 참여 페이지 구현",
+      "description": "app/(mobile)/join/[code]/page.tsx를 신규 생성하여 초대 링크로 접근한 사용자가 이벤트 정보를 확인하고 참여 의사를 표시할 수 있는 페이지를 구현한다.\n\n구현 항목:\n- invite_code로 이벤트 검색 (getDummyEventByInviteCode)\n- 이벤트 없으면 notFound() 처리\n- 이벤트 정보 미리보기: 커버 이미지, 제목, 상태 배지, 날짜, 장소, 참여자 수\n- '참여하기' 버튼: 더미 단계에서는 클릭 시 /events로 이동 (Client Component 분리)\n- 이미 참여한 경우 '이미 참여 중' 텍스트 표시 (더미: DUMMY_PARTICIPANTS에서 확인)\n\n수락 기준:\n- /join/abc123 접속 시 event-001 정보가 표시됨\n- /join/invalid 접속 시 404 페이지 표시\n- '참여하기' 버튼 클릭 시 /events로 이동\n- 기존 (mobile) 레이아웃(헤더+네비게이션) 적용됨",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "b4ef6a47-b1d9-4ca9-a2bc-39af1599b57f"
+        }
+      ],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:45:14.173Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/join/[code]/page.tsx",
+          "type": "CREATE",
+          "description": "초대 링크 참여 페이지 (Server Component)"
+        },
+        {
+          "path": "components/events/join-event-button.tsx",
+          "type": "CREATE",
+          "description": "참여하기 버튼 (Client Component)"
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "DEPENDENCY",
+          "description": "getDummyEventByInviteCode 사용"
+        },
+        {
+          "path": "lib/format.ts",
+          "type": "DEPENDENCY",
+          "description": "formatDateFull 사용"
+        },
+        {
+          "path": "lib/constants/event-status.ts",
+          "type": "DEPENDENCY",
+          "description": "statusConfig 사용"
+        }
+      ],
+      "implementationGuide": "// app/(mobile)/join/[code]/page.tsx (Server Component)\nimport { notFound } from 'next/navigation';\nimport { getDummyEventByInviteCode, DUMMY_PARTICIPANTS } from '@/lib/dummy-data';\nimport { formatDateFull } from '@/lib/format';\nimport { statusConfig } from '@/lib/constants/event-status';\nimport { JoinEventButton } from '@/components/events/join-event-button';  // 신규 client 컴포넌트\n\nexport default async function JoinPage({ params }) {\n  const { code } = await params;\n  const event = getDummyEventByInviteCode(code);\n  if (!event) notFound();\n\n  const CURRENT_USER_ID = 'user-001';\n  const alreadyJoined = DUMMY_PARTICIPANTS.some(\n    (p) => p.event_id === event.id && p.user_id === CURRENT_USER_ID\n  );\n\n  return (\n    // 이벤트 정보 카드 + JoinEventButton\n  );\n}\n\n// components/events/join-event-button.tsx (Client Component)\n'use client';\nexport function JoinEventButton({ alreadyJoined }: { alreadyJoined: boolean }) {\n  const router = useRouter();\n  if (alreadyJoined) return <p>이미 참여 중입니다</p>;\n  return <button onClick={() => router.push('/events')}>참여하기</button>;\n}",
+      "verificationCriteria": "/join/abc123 접속 시 '봄 소풍 모임' 이벤트 정보가 표시되고, /join/invalid 접속 시 404, '참여하기' 버튼 클릭 시 /events로 이동한다.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "app/(mobile)/join/[code]/page.tsx 신규 생성. getDummyEventByInviteCode로 invite_code 기반 이벤트 검색, 없으면 notFound() 처리. 커버 이미지, 제목, 상태 배지, 날짜, 장소, 참여자 수 표시. JoinEventButton 클라이언트 컴포넌트 분리 — 참여 시 /events로 이동, 이미 참여 중이면 안내 텍스트 표시. (mobile) 레이아웃 자동 적용.",
+      "completedAt": "2026-04-28T06:45:14.165Z"
+    },
+    {
+      "id": "1ac81dca-41da-4014-bb50-b0f52a1e5097",
+      "name": "Task 005-4: 이벤트 목록 페이지 참여자 뷰 통합",
+      "description": "app/(mobile)/events/page.tsx를 수정하여 주최한 이벤트와 참여한 이벤트를 모두 표시하고, 각 카드에 역할(주최/참여) 배지를 추가한다.\n\n구현 항목:\n- getDummyEventsByUserId(CURRENT_USER_ID)로 주최+참여 이벤트 통합 조회\n- 각 이벤트 카드에 역할 배지 추가: created_by === CURRENT_USER_ID → '주최'(emerald), 아니면 '참여'(blue)\n- 빈 상태 메시지 수정: '초대 링크를 받아 이벤트에 참여하거나 새 이벤트를 만들어보세요'\n- 이벤트 만들기 버튼 유지 (상단 헤더 + 빈 상태 CTA)\n- 상태 필터 탭(StatusFilterTabs) 유지\n\n수락 기준:\n- 이벤트 목록에 주최한 이벤트(event-001, 002, 004)와 참여한 이벤트(event-003, 004)가 모두 표시됨\n- 각 카드에 '주최' 또는 '참여' 배지가 표시됨\n- 상태 필터 탭이 정상 동작함",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "b4ef6a47-b1d9-4ca9-a2bc-39af1599b57f"
+        }
+      ],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:45:17.523Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "getDummyEventsByUserId로 교체, 역할 배지 추가",
+          "lineStart": 1,
+          "lineEnd": 117
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "DEPENDENCY",
+          "description": "getDummyEventsByUserId 사용"
+        }
+      ],
+      "implementationGuide": "// events/page.tsx 수정\nconst CURRENT_USER_ID = 'user-001';\nconst myEvents = getDummyEventsByUserId(CURRENT_USER_ID);  // 기존 filter 교체\n\n// 카드 내부에 역할 배지 추가\nconst isOwner = event.created_by === CURRENT_USER_ID;\n<Badge variant={isOwner ? 'default' : 'secondary'}>\n  {isOwner ? '주최' : '참여'}\n</Badge>",
+      "verificationCriteria": "이벤트 목록에 주최/참여 이벤트가 모두 표시되고, 각 카드에 '주최' 또는 '참여' 배지가 렌더링된다.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "getDummyEventsByUserId(CURRENT_USER_ID)로 주최+참여 이벤트 통합 조회. 각 카드에 created_by 비교로 주최(emerald)/참여(blue) 배지 추가. 빈 상태 메시지 수정 완료. StatusFilterTabs 및 이벤트 만들기 버튼 유지.",
+      "completedAt": "2026-04-28T06:45:17.520Z"
+    },
+    {
+      "id": "d2c54855-dee5-486d-b2af-fd95e4f5f64d",
+      "name": "Task 005-5: 이벤트 상세 페이지 isOwner 분기 적용",
+      "description": "app/(mobile)/events/[id]/page.tsx에서 CURRENT_USER_ID와 event.created_by를 비교하여 isOwner를 계산하고, EventDetailActions에 prop으로 전달한다.\n\n구현 항목:\n- CURRENT_USER_ID 상수 선언\n- isOwner = event.created_by === CURRENT_USER_ID 계산\n- EventDetailActions에 isOwner={isOwner} prop 전달\n- 참여자 목록 섹션: 역할 배지('주최자'/'참여자') 이미 구현됨 — 수정 불필요\n\n수락 기준:\n- event-001(created_by: user-001) 접속 시 수정/삭제/초대링크 버튼 표시\n- event-003(created_by: user-002) 접속 시 수정/삭제/초대링크 버튼 미표시\n- TypeScript 컴파일 오류 없음",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "8beca127-d2a0-4bf0-a9e6-531ac61a2ee7"
+        }
+      ],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:45:21.365Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/events/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "isOwner 계산 및 prop 전달",
+          "lineStart": 1,
+          "lineEnd": 97
+        },
+        {
+          "path": "components/events/event-detail-actions.tsx",
+          "type": "DEPENDENCY",
+          "description": "isOwner prop 수신"
+        }
+      ],
+      "implementationGuide": "// events/[id]/page.tsx 수정\nconst CURRENT_USER_ID = 'user-001';\nconst isOwner = event.created_by === CURRENT_USER_ID;\n\n// EventDetailActions에 prop 전달\n<EventDetailActions event={event} isOwner={isOwner} />",
+      "verificationCriteria": "/events/event-001 접속 시 수정/삭제 버튼 표시, /events/event-003 접속 시 수정/삭제 버튼 없음.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "CURRENT_USER_ID 상수 선언, isOwner = event.created_by === CURRENT_USER_ID 계산, EventDetailActions에 isOwner={isOwner} prop 전달 완료. event-001(user-001 주최) 접속 시 수정/삭제/초대링크 버튼 표시, event-003(user-002 주최) 접속 시 미표시.",
+      "completedAt": "2026-04-28T06:45:21.361Z"
+    },
+    {
+      "id": "b55fd9fe-cc15-4aab-b806-3a2b806f034e",
+      "name": "Task 005-6: 프로필 페이지 참여 이벤트 목록 섹션 추가",
+      "description": "app/(mobile)/profile/page.tsx에 '참여한 이벤트' 섹션을 추가하여 최근 참여한 이벤트 목록을 표시한다.\n\n구현 항목:\n- DUMMY_PARTICIPANTS에서 CURRENT_USER_ID의 participant 역할 이벤트 조회\n- 참여한 이벤트 목록 카드 (최대 3개): 제목, 날짜, 장소\n- 이벤트 카드 클릭 시 /events/[id]로 이동\n- 참여한 이벤트 없으면 '아직 참여한 이벤트가 없습니다' 빈 상태 표시\n- 기존 통계 섹션(hostedCount, participatedCount)은 유지\n\n수락 기준:\n- CURRENT_USER_ID='user-001'일 때 참여한 이벤트 목록이 표시됨 (user-001은 ep-002 없으므로 빈 상태)\n- 각 이벤트 카드가 /events/[id] 링크로 연결됨\n- 기존 통계 카드와 로그아웃 버튼이 유지됨",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "b4ef6a47-b1d9-4ca9-a2bc-39af1599b57f"
+        }
+      ],
+      "createdAt": "2026-04-28T06:34:56.054Z",
+      "updatedAt": "2026-04-28T06:45:24.782Z",
+      "relatedFiles": [
+        {
+          "path": "app/(mobile)/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "참여한 이벤트 목록 섹션 추가",
+          "lineStart": 1,
+          "lineEnd": 113
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "DEPENDENCY",
+          "description": "DUMMY_PARTICIPANTS, getDummyEventById 사용"
+        }
+      ],
+      "implementationGuide": "// profile/page.tsx 수정\nconst participatedEvents = DUMMY_PARTICIPANTS\n  .filter((p) => p.user_id === CURRENT_USER_ID && p.role === 'participant')\n  .map((p) => getDummyEventById(p.event_id))\n  .filter(Boolean)\n  .slice(0, 3);\n\n// 렌더링\n<div className='mt-4 rounded-2xl border bg-card p-4'>\n  <h2>참여한 이벤트</h2>\n  {participatedEvents.length === 0 ? (\n    <p>아직 참여한 이벤트가 없습니다</p>\n  ) : (\n    participatedEvents.map((event) => (\n      <Link href={`/events/${event.id}`}>{event.title}</Link>\n    ))\n  )}\n</div>",
+      "verificationCriteria": "프로필 페이지에 '참여한 이벤트' 섹션이 표시되고, 참여 이벤트 카드 클릭 시 해당 이벤트 상세 페이지로 이동한다.",
+      "analysisResult": "Task 005: 참여자 모바일 UI/UX 완성. 더미 데이터 기반으로 참여자(guest) 관점의 읽기 전용 모바일 뷰를 구현한다. isOwner boolean 분기를 핵심 패턴으로 사용하며, 주최자 뷰(Task 004)에서 구현된 공통 컴포넌트를 최대한 재사용한다. CURRENT_USER_ID = \"user-001\" 유지, Phase 3에서 실제 auth로 교체 예정. /join/* 라우트는 미들웨어에서 이미 공개 경로로 허용됨.",
+      "summary": "프로필 페이지에 '참여한 이벤트' 섹션 추가. participant 역할 필터링 후 getDummyEventById로 이벤트 조회, 최대 3개 카드 표시. 각 카드에 제목, 날짜, 장소 + /events/[id] 링크 연결. 참여 이벤트 없으면 빈 상태 메시지 표시. 기존 통계 섹션 및 로그아웃 버튼 유지.",
+      "completedAt": "2026-04-28T06:45:24.778Z"
     }
   ]
 }

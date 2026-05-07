@@ -128,10 +128,30 @@ export const DUMMY_PARTICIPANTS: (EventParticipant & { user: User })[] = [
     joined_at: "2026-04-03T11:00:00Z",
     user: DUMMY_USERS[2],
   },
+  {
+    id: "ep-004",
+    event_id: "event-003",
+    user_id: "user-002",
+    role: "participant",
+    joined_at: "2026-04-16T10:00:00Z",
+    user: DUMMY_USERS[1],
+  },
+  {
+    id: "ep-005",
+    event_id: "event-004",
+    user_id: "user-002",
+    role: "participant",
+    joined_at: "2026-04-21T10:00:00Z",
+    user: DUMMY_USERS[1],
+  },
 ];
 
 export function getDummyEventById(id: string): EventWithCount | undefined {
   return DUMMY_EVENTS.find((e) => e.id === id);
+}
+
+export function getDummyEventByInviteCode(code: string): EventWithCount | undefined {
+  return DUMMY_EVENTS.find((e) => e.invite_code === code);
 }
 
 export function getDummyEventsByUserId(userId: string): EventWithCount[] {

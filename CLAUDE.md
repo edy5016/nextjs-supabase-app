@@ -1,5 +1,5 @@
 ---
-description: 
+description: Gather 앱 개발 가이드 — Next.js 15 + Supabase 기반 이벤트 관리 플랫폼
 alwaysApply: true
 ---
 

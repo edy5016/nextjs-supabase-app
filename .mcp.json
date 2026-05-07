@@ -30,7 +30,8 @@
       "env": {
         "DATA_DIR": "C:\\Dev\\Cursor\\workspace_supabase\\nextjs-supabase-app\\shrimp_data",
         "TEMPLATES_USE": "en",
-        "ENABLE_GUI": "true"
+        "ENABLE_GUI": "true",
+        "WEB_PORT": "3001"
       }
     }
   }
