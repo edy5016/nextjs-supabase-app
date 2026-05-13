@@ -7,16 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GoogleAuthButton } from "@/components/google-auth-button";
 
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+interface LoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
+  redirectTo?: string;
+}
+
+export function LoginForm({ className, redirectTo, ...props }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +32,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         password,
       });
       if (error) throw error;
-      router.push("/events");
+      // 로그인 후 세션 쿠키가 서버에 즉시 반영되도록 하드 네비게이션 사용
+      // router.push()는 소프트 내비게이션이라 서버가 새 세션을 못 읽는 경우 있음
+      window.location.href = redirectTo ?? "/events";
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "오류가 발생했습니다");
     } finally {
@@ -89,7 +93,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   <span className="bg-background px-2 text-muted-foreground">또는</span>
                 </div>
               </div>
-              <GoogleAuthButton label="Google로 로그인" />
+              <GoogleAuthButton label="Google로 로그인" next={redirectTo} />
             </div>
             <div className="mt-4 text-center text-sm">
               계정이 없으신가요?{" "}

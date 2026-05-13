@@ -1,14 +1,14 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Calendar, MapPin, Users, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getDummyEventsByUserId } from "@/lib/dummy-data";
+import { createClient } from "@/lib/supabase/server";
+import { getMyEvents } from "@/lib/queries/events";
 import { formatDate } from "@/lib/format";
 import { statusConfig } from "@/lib/constants/event-status";
 import { StatusFilterTabs } from "@/components/events/status-filter-tabs";
 import { Suspense } from "react";
 import type { EventStatus } from "@/types";
-
-const CURRENT_USER_ID = "user-001";
 
 export default async function EventsPage({
   searchParams,
@@ -18,6 +18,16 @@ export default async function EventsPage({
   // Next.js 15: searchParams는 Promise — await 필수
   const { status } = await searchParams;
 
+  // 인증 확인: 미인증 사용자는 로그인 페이지로 리다이렉트
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
   // status 파라미터가 유효한 EventStatus인지 검증, 아니면 'all'
   const validStatuses: EventStatus[] = ["upcoming", "ongoing", "ended"];
   const activeStatus = validStatuses.includes(status as EventStatus)
@@ -25,9 +35,9 @@ export default async function EventsPage({
     : "all";
 
   // 현재 사용자가 주최하거나 참여한 이벤트 통합 조회
-  const myEvents = getDummyEventsByUserId(CURRENT_USER_ID);
+  const myEvents = await getMyEvents(supabase, user.id);
 
-  // 상태 필터 적용
+  // 상태 필터 적용 (computeEventStatus가 이미 적용된 상태)
   const filteredEvents =
     activeStatus === "all"
       ? myEvents
@@ -74,6 +84,8 @@ export default async function EventsPage({
         <div className="flex flex-col gap-4">
           {filteredEvents.map((event) => {
             const config = statusConfig[event.status];
+            // 주최 이벤트 여부: created_by가 현재 로그인 사용자와 일치
+            const isHost = event.created_by === user.id;
             return (
               <Link
                 key={event.id}
@@ -82,6 +94,7 @@ export default async function EventsPage({
               >
                 {event.cover_image_url && (
                   <div className="aspect-video w-full overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={event.cover_image_url}
                       alt={event.title}
@@ -94,14 +107,14 @@ export default async function EventsPage({
                     <h2 className="text-lg font-semibold text-foreground">{event.title}</h2>
                     <div className="flex items-center gap-1.5">
                       <Badge
-                        variant={event.created_by === CURRENT_USER_ID ? "default" : "secondary"}
+                        variant={isHost ? "default" : "secondary"}
                         className={
-                          event.created_by === CURRENT_USER_ID
+                          isHost
                             ? "bg-emerald-500 text-white hover:bg-emerald-600"
                             : "bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300"
                         }
                       >
-                        {event.created_by === CURRENT_USER_ID ? "주최" : "참여"}
+                        {isHost ? "주최" : "참여"}
                       </Badge>
                       <Badge variant={config.variant}>{config.label}</Badge>
                     </div>

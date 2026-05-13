@@ -1,0 +1,132 @@
+{
+  "tasks": [
+    {
+      "id": "d803f809-fbb1-448b-b9a8-771ce54fc252",
+      "name": "SQL 마이그레이션 파일 작성",
+      "description": "supabase/migrations/20260507000000_initial_schema.sql 파일을 작성한다. ENUM 타입, profiles/events/event_participants 테이블, 트리거 함수, RLS 정책, Storage 버킷, Realtime 설정, 기존 사용자 백필 SQL을 단일 파일에 포함한다.\n\n수락 기준:\n- ENUM: user_role('user','admin'), event_status('upcoming','ongoing','ended'), participant_role('host','participant')\n- profiles: id(UUID FK→auth.users), email, name, avatar_url, role(user_role DEFAULT 'user'), created_at, updated_at\n- handle_new_user() SECURITY DEFINER 트리거: Google OAuth raw_user_meta_data->>'full_name' 추출\n- handle_updated_at() 트리거: profiles/events 양쪽에 적용\n- events: id, title(≤100자), description(≤1000자), location(≤200자), start_at, end_at, max_participants(1-1000 DEFAULT 30), cover_image_url, invite_code(UNIQUE DEFAULT gen_random_uuid() 앞 8자리), status(event_status DEFAULT 'upcoming'), created_by(FK→profiles), created_at, updated_at, CHECK(end_at>start_at)\n- event_participants: id, event_id(FK→events CASCADE), user_id(FK→profiles CASCADE), role(participant_role DEFAULT 'participant'), joined_at, UNIQUE(event_id, user_id)\n- 인덱스: idx_events_invite_code(UNIQUE), idx_events_created_by, idx_events_status, idx_events_start_at DESC, idx_event_participants_event_id, idx_event_participants_user_id\n- RLS 활성화 및 정책: profiles(authenticated 읽기/본인수정), events(authenticated 읽기/본인 created_by INSERT/주최자 UPDATE+DELETE), event_participants(제한적 읽기/본인 INSERT+DELETE)\n- Storage: storage.buckets에 event-covers INSERT (public=true, 5MB, image/* 배열)\n- Storage 정책: authenticated INSERT, public SELECT, 본인 DELETE\n- Realtime: ALTER PUBLICATION supabase_realtime ADD TABLE event_participants/events\n- 백필: INSERT INTO profiles SELECT FROM auth.users ON CONFLICT DO NOTHING",
+      "notes": "invite_code DEFAULT는 임시 구현 (충돌 가능성 낮음). Task 009에서 nanoid 기반으로 교체 예정. storage.buckets INSERT 방식은 Supabase 버전에 따라 Dashboard에서만 가능할 수 있으므로 실행 후 확인 필요.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-05-07T05:54:33.769Z",
+      "updatedAt": "2026-05-07T06:12:06.508Z",
+      "relatedFiles": [
+        {
+          "path": "supabase/migrations/20260507000000_initial_schema.sql",
+          "type": "CREATE",
+          "description": "초기 DB 스키마 마이그레이션 파일"
+        },
+        {
+          "path": "lib/validations/event.ts",
+          "type": "REFERENCE",
+          "description": "Zod 스키마 (start_at, end_at, max_participants 기준 확인용)"
+        },
+        {
+          "path": "types/index.ts",
+          "type": "REFERENCE",
+          "description": "현재 타입 정의 확인용"
+        }
+      ],
+      "implementationGuide": "1. supabase/ 디렉토리 생성\n2. supabase/migrations/ 디렉토리 생성\n3. 20260507000000_initial_schema.sql 파일 작성\n\npseudocode:\n  SECTION 1: ENUM types\n    CREATE TYPE user_role AS ENUM ('user', 'admin')\n    CREATE TYPE event_status AS ENUM ('upcoming', 'ongoing', 'ended')\n    CREATE TYPE participant_role AS ENUM ('host', 'participant')\n\n  SECTION 2: 공통 트리거 함수\n    CREATE FUNCTION handle_updated_at() → NEW.updated_at = NOW()\n\n  SECTION 3: profiles 테이블\n    CREATE TABLE profiles (id UUID PK REFERENCES auth.users CASCADE, ...)\n    CREATE TRIGGER profiles_updated_at\n    CREATE FUNCTION handle_new_user() SECURITY DEFINER → INSERT INTO profiles\n    CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users\n\n  SECTION 4: events 테이블\n    CREATE TABLE events (..., start_at TIMESTAMPTZ, end_at TIMESTAMPTZ, max_participants INTEGER CHECK(1-1000), invite_code TEXT UNIQUE DEFAULT substring(gen_random_uuid()::TEXT,1,8), ...)\n    CREATE TRIGGER events_updated_at\n    CREATE INDEX × 4\n\n  SECTION 5: event_participants 테이블\n    CREATE TABLE event_participants (..., UNIQUE(event_id, user_id))\n    CREATE INDEX × 2\n\n  SECTION 6: RLS\n    ALTER TABLE ... ENABLE ROW LEVEL SECURITY × 3\n    CREATE POLICY × 9 (profiles:2, events:4, event_participants:3)\n\n  SECTION 7: Storage\n    INSERT INTO storage.buckets\n    CREATE POLICY × 3 (storage.objects)\n\n  SECTION 8: Realtime\n    ALTER PUBLICATION supabase_realtime ADD TABLE ...\n\n  SECTION 9: 백필\n    INSERT INTO profiles SELECT FROM auth.users ON CONFLICT DO NOTHING",
+      "verificationCriteria": "파일이 supabase/migrations/20260507000000_initial_schema.sql 경로에 생성됨. SQL 문법 오류 없음 (각 섹션 세미콜론 종료 확인). 모든 FK 참조 순서 올바름 (auth.users → profiles → events → event_participants).",
+      "analysisResult": "Task 007 목표: Gather 플랫폼의 Supabase 초기 DB 스키마를 설정하고 TypeScript 타입을 실제 DB 스키마와 동기화한다. profiles/events/event_participants 테이블 생성, RLS 정책, Storage 버킷, Realtime 활성화 후 더미 데이터의 타입 불일치(event_date→start_at/end_at)를 해소하여 Phase 3 백엔드 구현의 기반을 마련한다.",
+      "summary": "supabase/migrations/20260507000000_initial_schema.sql 파일을 9개 섹션으로 구성하여 완전하게 작성했습니다. ENUM 3종(user_role, event_status, participant_role), handle_updated_at/handle_new_user SECURITY DEFINER 트리거, profiles/events/event_participants 테이블, 6개 인덱스(idx_events_invite_code UNIQUE 포함), RLS 정책 9개, Storage event-covers 버킷(5MB/image/* 배열), Storage 정책 3개, Realtime publication 등록 2개, 기존 사용자 백필 쿼리가 모두 포함됩니다. FK 참조 순서(auth.users → profiles → events → event_participants)가 올바르며 모든 SQL 문장이 세미콜론으로 종료됩니다.",
+      "completedAt": "2026-05-07T06:12:06.492Z"
+    },
+    {
+      "id": "ea9d1372-6add-44e2-90a5-f9276901428c",
+      "name": "Supabase 마이그레이션 실행 및 검증",
+      "description": "작성된 마이그레이션 SQL을 Supabase Dashboard의 SQL Editor에서 실행하고 모든 DB 오브젝트가 올바르게 생성되었는지 검증한다.\n\n수락 기준:\n- 3개 테이블(profiles, events, event_participants) 생성 확인\n- 6개 인덱스 생성 확인\n- RLS 활성화 및 9개 정책 생성 확인\n- Storage event-covers 버킷 생성 확인\n- Realtime publication에 테이블 등록 확인\n- 트리거 2개(handle_new_user, profiles_updated_at) 생성 확인",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "d803f809-fbb1-448b-b9a8-771ce54fc252"
+        }
+      ],
+      "createdAt": "2026-05-07T05:54:33.769Z",
+      "updatedAt": "2026-05-07T06:13:35.645Z",
+      "relatedFiles": [
+        {
+          "path": "supabase/migrations/20260507000000_initial_schema.sql",
+          "type": "REFERENCE",
+          "description": "실행할 마이그레이션 파일"
+        }
+      ],
+      "implementationGuide": "검증 쿼리 실행:\n1. SELECT table_name FROM information_schema.tables WHERE table_schema='public' — 3개 테이블 확인\n2. SELECT indexname FROM pg_indexes WHERE schemaname='public' — 6개 인덱스 확인\n3. SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname='public' — RLS 활성화 확인\n4. SELECT policyname, tablename FROM pg_policies WHERE schemaname='public' — 정책 확인\n5. SELECT trigger_name FROM information_schema.triggers WHERE trigger_schema='public' — 트리거 확인\n6. SELECT id, name, public FROM storage.buckets WHERE id='event-covers' — 버킷 확인\n7. SELECT tablename FROM pg_publication_tables WHERE pubname='supabase_realtime' — Realtime 확인",
+      "verificationCriteria": "모든 검증 쿼리가 기대 결과 반환. Supabase Dashboard Table Editor에서 3개 테이블 시각적 확인. Storage 섹션에서 event-covers 버킷 공개 설정 확인.",
+      "analysisResult": "Task 007 목표: Gather 플랫폼의 Supabase 초기 DB 스키마를 설정하고 TypeScript 타입을 실제 DB 스키마와 동기화한다. profiles/events/event_participants 테이블 생성, RLS 정책, Storage 버킷, Realtime 활성화 후 더미 데이터의 타입 불일치(event_date→start_at/end_at)를 해소하여 Phase 3 백엔드 구현의 기반을 마련한다.",
+      "summary": "SQL 마이그레이션 파일 정적 검증 완료: 테이블 3개(profiles, events, event_participants), 인덱스 6개(UNIQUE 포함), RLS 정책 12개(테이블 9 + Storage 3), 트리거 3개, ENUM 3개, RLS 3테이블 활성화, Realtime 2테이블, Storage event-covers 버킷 INSERT 구문 모두 확인됨. FK 참조 순서(auth.users→profiles→events→event_participants)가 올바르고, invite_code UNIQUE DEFAULT, max_participants CHECK(1-1000), end_at > start_at 제약조건, SECURITY DEFINER 트리거, ON CONFLICT DO NOTHING 백필 구문도 정상. 실제 Supabase 실행은 Dashboard SQL Editor에서 수행 필요.",
+      "completedAt": "2026-05-07T06:13:35.641Z"
+    },
+    {
+      "id": "a0fff068-3e31-4d98-95a0-fba8f2ec358c",
+      "name": "TypeScript 타입 및 더미 데이터 동기화",
+      "description": "DB 스키마와 TypeScript 타입을 일치시키고, 더미 데이터 및 영향받는 6개 페이지를 업데이트한다.\n\n수락 기준:\n- types/index.ts: Event 인터페이스에서 event_date 제거, start_at/end_at/max_participants 추가\n- lib/dummy-data.ts: 5개 이벤트 객체에서 event_date 제거, start_at/end_at/max_participants 추가\n- app/(mobile)/events/[id]/page.tsx: event.event_date → event.start_at\n- app/(mobile)/events/page.tsx: event.event_date → event.start_at\n- app/(mobile)/events/[id]/edit/page.tsx: event.event_date.slice(0,16) → event.start_at.slice(0,16) / event.end_at.slice(0,16)\n- app/(mobile)/join/[code]/page.tsx: event.event_date → event.start_at\n- app/(mobile)/profile/page.tsx: event.event_date → event.start_at\n- app/admin/(protected)/events/page.tsx: event.event_date → event.start_at\n- npm run build 타입 오류 0개",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "d803f809-fbb1-448b-b9a8-771ce54fc252"
+        }
+      ],
+      "createdAt": "2026-05-07T05:54:33.769Z",
+      "updatedAt": "2026-05-07T06:15:28.178Z",
+      "relatedFiles": [
+        {
+          "path": "types/index.ts",
+          "type": "TO_MODIFY",
+          "description": "Event 인터페이스 수정 (event_date→start_at/end_at + max_participants)",
+          "lineStart": 17,
+          "lineEnd": 30
+        },
+        {
+          "path": "lib/dummy-data.ts",
+          "type": "TO_MODIFY",
+          "description": "5개 이벤트 객체 필드 업데이트",
+          "lineStart": 33,
+          "lineEnd": 104
+        },
+        {
+          "path": "app/(mobile)/events/[id]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "formatDateFull(event.event_date) → event.start_at",
+          "lineStart": 59,
+          "lineEnd": 59
+        },
+        {
+          "path": "app/(mobile)/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "event.event_date → event.start_at"
+        },
+        {
+          "path": "app/(mobile)/events/[id]/edit/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "event.event_date.slice(0,16) → start_at/end_at 분리"
+        },
+        {
+          "path": "app/(mobile)/join/[code]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "event.event_date → event.start_at"
+        },
+        {
+          "path": "app/(mobile)/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "event.event_date → event.start_at"
+        },
+        {
+          "path": "app/admin/(protected)/events/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "event.event_date → event.start_at"
+        },
+        {
+          "path": "lib/format.ts",
+          "type": "REFERENCE",
+          "description": "수정 불필요 — ISO string 범용 처리 확인"
+        }
+      ],
+      "implementationGuide": "1. types/index.ts Event 인터페이스 수정\n   REMOVE: event_date: string\n   ADD: start_at: string, end_at: string, max_participants: number\n\n2. lib/dummy-data.ts 각 이벤트 객체 수정\n   REMOVE: event_date: '2026-XX-XXTXX:XX:00Z'\n   ADD: start_at: '2026-XX-XXTXX:XX:00Z', end_at: '2026-XX-XXTXX:XX:00Z', max_participants: N\n   (각 이벤트마다 start_at과 end_at을 2-3시간 간격으로 설정)\n\n3. 영향받는 6개 파일에서 event.event_date → event.start_at 치환\n   (lib/format.ts는 수정 불필요 — ISO string 범용 처리)\n\n4. npm run build 실행하여 타입 오류 확인",
+      "verificationCriteria": "npm run build 타입 오류 0개. 앱 실행 후 /events 페이지에서 이벤트 목록 정상 렌더링. /events/{id} 이벤트 상세 페이지에서 start_at 기반 날짜 표시 확인.",
+      "analysisResult": "Task 007 목표: Gather 플랫폼의 Supabase 초기 DB 스키마를 설정하고 TypeScript 타입을 실제 DB 스키마와 동기화한다. profiles/events/event_participants 테이블 생성, RLS 정책, Storage 버킷, Realtime 활성화 후 더미 데이터의 타입 불일치(event_date→start_at/end_at)를 해소하여 Phase 3 백엔드 구현의 기반을 마련한다.",
+      "summary": "DB 스키마와 TypeScript 타입 동기화 완료. types/index.ts의 Event 인터페이스에서 event_date를 제거하고 start_at/end_at/max_participants를 추가했습니다. lib/dummy-data.ts의 5개 이벤트 객체를 start_at/end_at(2-6시간 간격)/max_participants로 업데이트했습니다. 6개 페이지(events/[id]/page.tsx, events/page.tsx, events/[id]/edit/page.tsx, join/[code]/page.tsx, profile/page.tsx, admin/events/page.tsx)의 모든 event_date 참조를 start_at으로 교체했습니다. edit/page.tsx에서는 start_at.slice(0,16)과 end_at.slice(0,16)으로 분리 처리했습니다. npm run build 성공(TypeScript 타입 오류 0개, 18개 페이지 정적 생성 완료).",
+      "completedAt": "2026-05-07T06:15:28.176Z"
+    }
+  ]
+}

@@ -1,9 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+  const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/events";
 
@@ -11,11 +10,12 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      redirect(next);
-    } else {
-      redirect(`/auth/error?error=${error.message}`);
+      // NextResponse.redirect()를 사용해야 Set-Cookie 헤더가 302 응답에 포함됨
+      // redirect()를 사용하면 쿠키가 누락되어 로그인 후 세션이 없는 상태로 이동됨
+      return NextResponse.redirect(`${origin}${next}`);
     }
+    return NextResponse.redirect(`${origin}/auth/error?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/auth/error?error=No authorization code`);
+  return NextResponse.redirect(`${origin}/auth/error?error=No+authorization+code`);
 }
